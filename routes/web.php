@@ -1,5 +1,6 @@
 <?php
 
+use App\User;
 use App\Project;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,33 @@ Route::get('/edit-project/{id}',function($id){
     return view('Admin.Project.edit_project',compact('projects'));
 })->name('project.edit');
 
+Route::post('/update/{id}','AdminController@update')->name('project.update');
+
 Route::get('/view/{id}','AdminController@view')->name('project.view');
 
 Route::get('/delete/{id}','AdminController@delete')->name('project.delete');
+
+Route::get('/member/{id}',function($id){
+    $projects = Project::find($id);
+    $prev_member = $projects->users()->get(array('name'));
+    
+    // $pro_mem = $project->users;
+    
+    return view('Admin.Project.member',compact('prev_member','id'));
+})->name('project.member');
+
+Route::get('/member/add/{id}',function($id){
+    $projects = Project::find($id);
+    $user = $projects->users()->get(array('user_id'));
+    $a = array();
+    foreach($user as $u)
+    {
+        array_push($a,$u->user_id);
+    }
+    // return $a;
+    $user =  User::whereNotIn('id',$a)->get();
+    
+    return view('Admin.project.member',compact('user','projects'));
+})->name('member.add');
+
+Route::get('/add-mem/{id}{pid}','AdminController@add_member')->name('member.push');

@@ -18,6 +18,17 @@ class AdminController extends Controller
         return redirect()->route('admin.project');
     }
 
+    public function update(Request $request,$id){
+        $project = Project::findOrFail($id);
+        $project->update([
+            'project_name' => $request->pname,
+            'client_name' => $request->cname,
+            'description' => $request->desc,
+            'status' => $request->status,
+        ]);
+        return redirect()->route('admin.project');
+    }
+
     public function delete($id){
         $projects = Project::findOrFail($id);
         $projects->delete();
@@ -27,9 +38,15 @@ class AdminController extends Controller
     public function view($id)
     {
         $projects = Project::findOrFail($id);
-        // $mem = $projects->users()->get(array('name'));
-        // $job = Job::where('project_id','=',$id)->get();
+        $member = $projects->users()->get(array('name'));
+        $job = Job::where('project_id','=',$id)->get();
        
-        return view('Admin.Project.view',compact('projects'));
+        return view('Admin.Project.view',compact('projects','member', 'job'));
+    }
+    public function add_member($id,$pid)
+    {
+        $projects = Project::findOrFail($pid);
+        $projects->users()->syncWithoutDetaching($id);
+        return redirect()->back();
     }
 }

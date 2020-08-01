@@ -15,6 +15,7 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->text('Task_description');
             $table->boolean('status')->default(0);
             $table->timestamp('start_date')->nullable()->default(null);
