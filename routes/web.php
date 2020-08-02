@@ -11,6 +11,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
 //admin dashboard
 Route::group(['middleware' => ['auth','admin'] ,'prefix'=>'admin'],function(){
     Route::get('/dashboard', 'Admin\AdminController@dashboard')->name('admin.dashboard');
