@@ -6,17 +6,19 @@ use App\Job;
 use App\User;
 use App\Project;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class AdminController extends Controller
+class ProjectController extends Controller
 {
-    public function dashboard(){
-        $user = User::where('user_type',0)->count();
-        $project = Project::count();
-        $completed_project = Project::where('status',1)->count();
-        $pending_project = Project::where('status',0)->count();
-        return view('admin.dashboard',compact('user', 'project', 'completed_project', 'pending_project'));
+    public function project_index(){
+        $projects = Project::all();
+        return view('admin.project',compact('projects'));
     }
-    //project
+
+    public function add_project_index(){
+        return view('Admin.Project.add_project');
+    }
+
     public function add(Request $request){
         Project::create([
             'project_name' => $request->pname,
@@ -25,6 +27,11 @@ class AdminController extends Controller
             'status' => 0,
         ]);
         return redirect()->route('admin.project');
+    }
+
+    Public function edit($id){
+        $projects = Project::findOrFail($id);
+        return view('Admin.Project.edit_project',compact('projects'));
     }
 
     public function update(Request $request,$id){
@@ -38,12 +45,6 @@ class AdminController extends Controller
         return redirect()->route('admin.project');
     }
 
-    public function delete($id){
-        $projects = Project::findOrFail($id);
-        $projects->delete();
-        return redirect()->back();
-    }
-
     public function view($id)
     {
         $projects = Project::findOrFail($id);
@@ -52,40 +53,44 @@ class AdminController extends Controller
        
         return view('Admin.Project.view',compact('projects','member', 'job'));
     }
+
+    public function delete($id){
+        $projects = Project::findOrFail($id);
+        $projects->delete();
+        return redirect()->back();
+    }
+
+    public function include_member($id){
+        $projects = Project::find($id);
+        $user = $projects->users()->get(array('user_id'));
+        $a = array();
+        foreach($user as $u)
+        {
+            array_push($a,$u->user_id);
+        }
+        // return $a;
+        $user =  User::whereNotIn('id',$a)->get();
+        
+        return view('Admin.project.add_member',compact('user','projects'));
+    }
+
     public function add_member($id,$pid)
     {
         $projects = Project::findOrFail($pid);
         $projects->users()->syncWithoutDetaching($id);
         return redirect()->back();
     }
+
+    public function remove_member($id){
+        $projects = Project::find($id);
+        $prev_member = $projects->users()->get(array('name'));
+        return view('Admin.Project.delete_member',compact('prev_member','projects'));
+    }
+
     public function delete_member($mid,$pid)
     {
         $project = Project::findOrFail($pid);
         $project->users()->detach($mid);
-        return redirect()->back();
-    }
-    //user
-    public function user_edit(Request $request,$id){
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
-            // 'user_type' => 'required|boolean',
-        ]);
-        
-        
-        $user = User::find($id);
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'user_type' => $request->user_type,
-            // 'user_type' => $request->has('user_type'),
-        ]);
-        return redirect()->route('admin.user');
-    }
-
-    public function user_delete(Request $request, $id){
-        $user = User::find($id);
-        $user->delete();
         return redirect()->back();
     }
 }

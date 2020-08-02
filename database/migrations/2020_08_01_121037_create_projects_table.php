@@ -17,8 +17,8 @@ class CreateProjectsTable extends Migration
             $table->bigIncrements('id');
             $table->string('project_name');
             $table->string('client_name');
-            $table->text('description');
-            $table->boolean('status');
+            $table->text('description')->nullable();
+            $table->boolean('status')->default(0);
             $table->timestamps();
         });
     }
