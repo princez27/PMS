@@ -8,8 +8,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//admin dashboard
 Route::get('/dashboard', function () {
-    return view('admin.dashboard');
+    $user = User::where('user_type',0)->count();
+    $project = Project::count();
+    $completed_project = Project::where('status',1)->count();
+    $pending_project = Project::where('status',0)->count();
+    return view('admin.dashboard',compact('user', 'project', 'completed_project', 'pending_project'));
 })->name('admin.dashboard');
 
 Route::get('/project', function() {
@@ -18,7 +23,8 @@ Route::get('/project', function() {
 })->name('admin.project');
 
 Route::get('/user', function() {
-    return view('admin.user');
+    $users=User::all();
+    return view('admin.user',compact('users'));
 })->name('admin.user');
 
 Route::get('/notification', function() {
@@ -29,6 +35,8 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+
+//admin-Project(Project Crud)
 Route::get('/add-project',function(){
     return view('Admin.Project.add_project');
 })->name('project.add');
@@ -46,15 +54,6 @@ Route::get('/view/{id}','AdminController@view')->name('project.view');
 
 Route::get('/delete/{id}','AdminController@delete')->name('project.delete');
 
-Route::get('/member/{id}',function($id){
-    $projects = Project::find($id);
-    $prev_member = $projects->users()->get(array('name'));
-    
-    // $pro_mem = $project->users;
-    
-    return view('Admin.Project.member',compact('prev_member','id'));
-})->name('project.member');
-
 Route::get('/member/add/{id}',function($id){
     $projects = Project::find($id);
     $user = $projects->users()->get(array('user_id'));
@@ -66,7 +65,32 @@ Route::get('/member/add/{id}',function($id){
     // return $a;
     $user =  User::whereNotIn('id',$a)->get();
     
-    return view('Admin.project.member',compact('user','projects'));
+    return view('Admin.project.add_member',compact('user','projects'));
 })->name('member.add');
 
-Route::get('/add-mem/{id}{pid}','AdminController@add_member')->name('member.push');
+Route::get('/add/member/{id}{pid}','AdminController@add_member')->name('member.push');
+
+
+Route::get('/member/{id}',function($id){
+    $projects = Project::find($id);
+    $prev_member = $projects->users()->get(array('name'));
+    
+    // $pro_mem = $project->users;
+    
+    return view('Admin.Project.delete_member',compact('prev_member','projects'));
+})->name('project.member');
+
+Route::get('/delete/member/{id}{pid}','AdminController@delete_member')->name('member.pop');
+
+
+//Admin User
+
+Route::get('/user/edit/{id}', function($id){
+    $user = User::findOrFail($id)->first();
+    return view('Admin.user.user_edit',compact('user'));
+})->name('user.edit');
+
+Route::post('/user/update/{id}','AdminController@user_edit')->name('user.update');
+
+Route::get('/user/delete/{id}','AdminController@user_delete')->name('user.delete');
+

@@ -7,8 +7,12 @@
 @section('content')
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-2">
+      </div>
+      <div class="col-md-8">
         <div class="card bg-success">
+        <div class="card-body">
+          <a href="{{ route('admin.project') }}" class="btn btn-dark"><i class="material-icons custom">arrow_back</i></a>
           <div class="card-header text-center">
             <h2 class="title">{{ $projects->project_name }}</h2>
           </div>
@@ -36,7 +40,7 @@
                 </div>
               @endforeach
               <div><a href="{{ route('member.add',['id' => $projects->id]) }}"><button type="button" class="btn btn-sm btn-light"><i class="material-icons">add</i>Add new Member</button></a></div>
-              <div><a href="{{ route('member.add',['id' => $projects->id]) }}"><button type="button" class="btn btn-sm btn-danger"><i class="material-icons">delete</i>Delete Member</button></a></div>
+              <div><a href="{{ route('project.member',['id' => $projects->id]) }}"><button type="button" class="btn btn-sm btn-danger"><i class="material-icons">delete</i>Delete Member</button></a></div>
               </div><br>
               <h3 class="text-dark"><strong><b>Tasks :</strong></b></h3>
               <div class="col-md-12">

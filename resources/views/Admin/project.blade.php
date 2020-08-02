@@ -13,7 +13,7 @@
                 <th scope="col" class="text-dark text-center"><h4><strong>Project</strong></h4></th>
                 <th scope="col" class="text-dark text-center"><h4><strong>Client Name</strong></h4></th>
                 <th scope="col" class="text-dark text-center"><h4><strong>Description</strong></h4></th>
-                <th scope="col" class="text-dark text-center"><h4><strong>Actions</strong></h4></th>
+                <th scope="col" class="text-dark text-center"><h4><strong>Status</strong></h4></th>                <th scope="col" class="text-dark text-center"><h4><strong>Actions</strong></h4></th>
             </tr>
         </thead>
         <tbody>
@@ -22,6 +22,18 @@
                 <td class="text-dark text-center"><strong>{{ $project->project_name }}</strong></td>
                 <td class="text-dark text-center"><strong>{{ $project->client_name }}</strong></td>
                 <td class="text-dark text-center"><strong>{{ $project->description }}</strong></td>
+                <td>
+                    @php
+                        if($project->status == 1)
+                            {$status = 'Completed';
+                              
+                            }
+                        else
+                            {$status = 'Pending';
+                            }
+                        @endphp
+                          <p class="text-center"><span class="{{ ($status == 'Completed')? 'badge badge-warning' : 'badge badge-danger' }}">{{ $status }}</span></p>
+                </td>
                 <td class="text-center">
                     <a class="text-dark" href="{{ route('project.view',['id' => $project->id]) }}">
                         <button type="button" class="btn btn-sm btn-info">View</button>
