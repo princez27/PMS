@@ -1,3 +1,6 @@
+@php
+  use App\User;
+@endphp
 @extends('Admin.Layout.main')
 
 @section('title')

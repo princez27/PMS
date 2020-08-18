@@ -13,7 +13,8 @@
                 <th scope="col" class="text-dark text-center"><h4><strong>Project</strong></h4></th>
                 <th scope="col" class="text-dark text-center"><h4><strong>Client Name</strong></h4></th>
                 <th scope="col" class="text-dark text-center"><h4><strong>Description</strong></h4></th>
-                <th scope="col" class="text-dark text-center"><h4><strong>Status</strong></h4></th>                <th scope="col" class="text-dark text-center"><h4><strong>Actions</strong></h4></th>
+                <th scope="col" class="text-dark text-center"><h4><strong>Status</strong></h4></th>                
+                <th scope="col" class="text-dark text-center"><h4><strong>Actions</strong></h4></th>
             </tr>
         </thead>
         <tbody>

@@ -7,13 +7,10 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProjectController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'User\UserController@home')->name('user.home');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
 
 //admin dashboard
 Route::group(['middleware' => ['auth','admin'] ,'prefix'=>'admin'],function(){
@@ -48,4 +45,15 @@ Route::group(['middleware' => ['auth','admin'] ,'prefix'=>'admin'],function(){
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'User\UserController@home')->name('user.home');
+
+//user routes
+Route::group(['prefix' => 'user','middleware' => ['auth']],function(){
+    Route::get('/', 'User\UserController@index')->name('user.index');
+    Route::get('/manage/task/{id}','User\UserController@manage_task')->name('user.manage')->middleware('managetask');
+    Route::get('/add/task/{id}', 'User\TaskController@include_task')->name('task.include');
+    Route::post('/add/save/{pid}', 'User\TaskController@save')->name('task.save');
+    Route::get('/edit/task/{tid}/{pid}','User\TaskController@edit')->name('task.edit')->middleware('edittask');
+    Route::post('/edit/save/{tid}','User\TaskController@store')->name('edit.save');
+    Route::get('/delete/{tid}/{pid}','User\TaskController@delete')->name('task.delete');
+});
